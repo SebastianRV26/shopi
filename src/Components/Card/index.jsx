@@ -4,17 +4,33 @@ import PropTypes from "prop-types";
 import { ShoppingCartContext } from "../../Context";
 
 const Card = ({ item }) => {
-  const { count, setCount, setProductToShow, openProductDetail } =
-    useContext(ShoppingCartContext);
+  const {
+    count,
+    setCount,
+    setProductToShow,
+    openProductDetail,
+    closeProductDetail,
+    cartProducts,
+    setCartProducts,
+    openCheckOutSideMenu,
+    closeCheckOutSideMenu,
+  } = useContext(ShoppingCartContext);
 
   const showProduct = () => {
     setProductToShow(item);
+    closeCheckOutSideMenu();
     openProductDetail();
   };
 
-  const handleAdd = (e) => {
+  const handleAddProductsToCart = (e) => {
     e.stopPropagation();
+
+    const newCart = [...cartProducts, item];
+    setCartProducts(newCart);
+
     setCount(count + 1);
+    openCheckOutSideMenu();
+    closeProductDetail();
   };
 
   return (
@@ -38,7 +54,7 @@ const Card = ({ item }) => {
         <button
           className={`absolute top-0 right-0 flex justify-center items-center 
           bg-white w-6 h-6 rounded-full m-2 p-1`}
-          onClick={(e) => handleAdd(e)}
+          onClick={(e) => handleAddProductsToCart(e)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
