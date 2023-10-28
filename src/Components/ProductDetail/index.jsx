@@ -21,20 +21,24 @@ const ProductDetail = () => {
         </button>
       </div>
 
-      <figure className="px-6">
-        <img
-          className="w-full h-full rounded-lg"
-          src={productToShow.image}
-          alt={productToShow.title}
-        />
-      </figure>
-      <p className="flex flex-col p-6">
-        <span className="font-medium text-2xl mb-2">
-          ${productToShow.price}
-        </span>
-        <span className="font-medium text-md">{productToShow.title}</span>
-        <span className="font-light text-sm">{productToShow.description}</span>
-      </p>
+      <div className="overflow-y-scroll">
+        <figure className="px-6">
+          <img
+            className="w-full h-full rounded-lg"
+            src={productToShow.image}
+            alt={productToShow.title}
+          />
+        </figure>
+        <p className="flex flex-col p-6">
+          <span className="font-medium text-2xl mb-2">
+            ${productToShow.price}
+          </span>
+          <span className="font-medium text-md">{productToShow.title}</span>
+          <span className="font-light text-sm">
+            {productToShow.description}
+          </span>
+        </p>
+      </div>
     </aside>
   );
 };
