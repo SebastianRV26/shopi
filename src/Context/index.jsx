@@ -1,5 +1,5 @@
 // import React from "react";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 export const ShoppingCartContext = createContext();
@@ -29,6 +29,50 @@ export const ShoppingCartProvider = ({ children }) => {
   const openCheckOutSideMenu = () => setIsCheckOutSideMenuOpen(true);
   const closeCheckOutSideMenu = () => setIsCheckOutSideMenuOpen(false);
 
+  // Get products
+  const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  // Get products by title
+  const [searchByTitle, setSearchByTitle] = useState("");
+  const [category, setCategory] = useState("");
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products/")
+      .then((response) => response.json())
+      .then((data) => {
+        setItems(data);
+        setFilteredItems(data);
+      });
+  }, []);
+
+  const filteredItemsByCategory = (items, searchByTitle, category) => {
+    return items?.filter(
+      (item) =>
+        ` ${item.category.toLowerCase()}`.includes(category.toLowerCase()) &&
+        (item.title.toLowerCase().includes(searchByTitle.toLowerCase()) ||
+          `${item.price}`.toLowerCase().includes(searchByTitle.toLowerCase()))
+    );
+  };
+
+  const filteredItemsByTitle = (items, searchByTitle) => {
+    return items?.filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchByTitle.toLowerCase()) ||
+        `${item.price}`.toLowerCase().includes(searchByTitle.toLowerCase())
+    );
+  };
+
+  useEffect(() => {
+    if (category) {
+      setFilteredItems(filteredItemsByCategory(items, searchByTitle, category));
+    } else if (searchByTitle) {
+      setFilteredItems(filteredItemsByTitle(items, searchByTitle));
+    } else {
+      setFilteredItems(items);
+    }
+  }, [items, searchByTitle, category]);
+
   return (
     <ShoppingCartContext.Provider
       value={{
@@ -45,6 +89,12 @@ export const ShoppingCartProvider = ({ children }) => {
         closeCheckOutSideMenu,
         order,
         setOrder,
+        // items,
+        // setItems,
+        searchByTitle,
+        setSearchByTitle,
+        filteredItems,
+        setCategory,
       }}
     >
       {children}
