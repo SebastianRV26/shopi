@@ -2,11 +2,42 @@
 import { useContext } from "react";
 import PropTypes from "prop-types";
 import { ShoppingCartContext } from "../../Context";
+import CheckIcon from "../../Assets/CheckIcon";
+import AddIcon from "../../Assets/AddIcon";
+
+const ItemButton = ({ isInCart, onItemAdded }) => {
+  if (isInCart) {
+    return (
+      <button
+        className={`absolute top-0 right-0 flex justify-center items-center 
+      bg-white/50 w-6 h-6 rounded-full m-2 p-1`}
+        // onClick={(e) => handleAddProductsToCart(e)}
+      >
+        <CheckIcon />
+      </button>
+    );
+  }
+
+  return (
+    <button
+      className={`absolute top-0 right-0 flex justify-center items-center 
+      bg-white w-6 h-6 rounded-full m-2 p-1`}
+      onClick={onItemAdded}
+    >
+      <AddIcon />
+    </button>
+  );
+};
+
+ItemButton.propTypes = {
+  isInCart: PropTypes.bool,
+  onItemAdded: PropTypes.func,
+};
 
 const Card = ({ item }) => {
   const {
-    count,
-    setCount,
+    // count,
+    // setCount,
     setProductToShow,
     openProductDetail,
     closeProductDetail,
@@ -16,7 +47,7 @@ const Card = ({ item }) => {
     closeCheckOutSideMenu,
   } = useContext(ShoppingCartContext);
 
-  const showProduct = () => {
+  const showProduct = (item) => {
     setProductToShow(item);
     closeCheckOutSideMenu();
     openProductDetail();
@@ -28,15 +59,17 @@ const Card = ({ item }) => {
     const newCart = [...cartProducts, item];
     setCartProducts(newCart);
 
-    setCount(count + 1);
+    // setCount(count + 1);
     openCheckOutSideMenu();
     closeProductDetail();
   };
 
+  const isInCart = !!cartProducts.find((product) => product.id === item.id);
+
   return (
     <div
       className="bg-white cursor-pointer w-56 h-60  rounded-lg"
-      onClick={showProduct}
+      onClick={() => showProduct(item)}
     >
       <figure className="relative mb-2 w-full h-4/5">
         <span
@@ -51,26 +84,9 @@ const Card = ({ item }) => {
           src={item.image}
           alt={item.title}
         />
-        <button
-          className={`absolute top-0 right-0 flex justify-center items-center 
-          bg-white w-6 h-6 rounded-full m-2 p-1`}
-          onClick={(e) => handleAddProductsToCart(e)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-        </button>
+        {/* {renderIcon(item)} */}
+
+        <ItemButton isInCart={isInCart} onItemAdded={handleAddProductsToCart} />
       </figure>
 
       <p className="flex justify-between">
